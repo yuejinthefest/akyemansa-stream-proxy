@@ -1,10 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-# Start nginx in the background
+echo "Starting nginx..."
+nginx -t
 nginx
 
-# Start FFmpeg to convert Shoutcast stream to HLS
-ffmpeg -i http://uk24freenew.listen2myradio.com:19279/ \
+echo "Waiting for nginx to start..."
+sleep 2
+
+echo "Starting FFmpeg stream conversion..."
+ffmpeg -loglevel info \
+  -i http://uk24freenew.listen2myradio.com:19279/ \
   -c:a aac \
   -b:a 128k \
   -f hls \
