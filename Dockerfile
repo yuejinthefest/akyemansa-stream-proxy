@@ -1,8 +1,11 @@
-# Use Alpine Linux with FFmpeg pre-installed
-FROM lscr.io/linuxserver/ffmpeg:latest
+# Use Alpine Linux with FFmpeg
+FROM alpine:3.19
 
-# Install nginx to serve the HLS files
-RUN apk add --no-cache nginx
+# Install FFmpeg and nginx
+RUN apk add --no-cache \
+    ffmpeg \
+    nginx \
+    bash
 
 # Create directories for HLS output
 RUN mkdir -p /var/www/html/stream /run/nginx
