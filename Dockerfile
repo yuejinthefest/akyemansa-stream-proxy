@@ -9,29 +9,13 @@ RUN apk add --no-cache \
 # Create directories
 RUN mkdir -p /var/www/html/stream /run/nginx
 
-# Create nginx config inline
-RUN echo 'worker_processes 1;\n\
-events { worker_connections 1024; }\n\
-http {\n\
-    include /etc/nginx/mime.types;\n\
-    default_type application/octet-stream;\n\
-    server {\n\
-        listen 8080;\n\
-        add_header Access-Control-Allow-Origin * always;\n\
-        add_header Access-Control-Allow-Methods "GET, OPTIONS" always;\n\
-        location /stream/ {\n\
-            alias /var/www/html/stream/;\n\
-            add_header Cache-Control "no-cache";\n\
-            types { application/vnd.apple.mpegurl m3u8; video/mp2t ts; }\n\
-        }\n\
-        location /health { return 200 "OK"; add_header Content-Type text/plain; }\n\
-    }\n\
-}' > /etc/nginx/nginx.conf
+# Copy nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port
 EXPOSE 8080
 
-# Start nginx and ffmpeg directly
+# Start nginx and ffmpeg
 CMD nginx && \
     ffmpeg -loglevel info \
     -i http://uk24freenew.listen2myradio.com:19279/ \
